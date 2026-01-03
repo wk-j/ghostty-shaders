@@ -3,20 +3,20 @@
 
 // ============ CONFIGURATION ============
 #define TRAIL_DURATION 0.8           // How long the trail lasts
-#define GLOW_INTENSITY 3.0           // Glow brightness
-#define GLOW_SIZE 3.0                // Glow spread (higher = smaller glow)
+#define GLOW_INTENSITY 1.5           // Glow brightness (reduced for less flash)
+#define GLOW_SIZE 4.0                // Glow spread (higher = smaller glow)
 #define PARTICLE_COUNT 12            // Number of particles in trail
 #define PARTICLE_SIZE 0.08           // Size of particles (as ratio of cursor)
 #define RAINBOW_MODE true            // Enable rainbow colors
 #define RAINBOW_SPEED 2.0            // Rainbow color cycle speed
 #define WAVE_AMPLITUDE 0.03          // Wave motion amplitude
 #define WAVE_FREQUENCY 8.0           // Wave motion frequency
-#define SPARKLE_INTENSITY 1.5        // Sparkle brightness (brighter)
+#define SPARKLE_INTENSITY 0.8        // Sparkle brightness (reduced for less flash)
 #define DRAW_THRESHOLD 1.0           // Minimum distance to draw trail (lower = more trails)
 #define HIDE_TRAILS_ON_SAME_LINE false
 #define TRAIL_THICKNESS 1.0          // Trail thickness multiplier (1.0 = exact cursor width)
 #define COLOR_SATURATION 0.8         // Color saturation (lower = lighter/pastel)
-#define COLOR_BRIGHTNESS 1.4         // Color brightness boost
+#define COLOR_BRIGHTNESS 1.1         // Color brightness boost (reduced for less flash)
 
 // Base colors (used when RAINBOW_MODE is false) - lighter tones
 const vec3 BASE_COLOR = vec3(1.0, 0.5, 0.3);      // Light Orange
@@ -261,13 +261,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         float effectAlpha = 0.0;
         
         // Add tail effect
-        effectAlpha += tailEffect;
+        effectAlpha += tailEffect * 0.7;
         
         // Add subtle glow
-        effectAlpha += trailGlow * 0.4;
+        effectAlpha += trailGlow * 0.25;
         
         // Add solid trail core
-        effectAlpha += trailCore * 0.8;
+        effectAlpha += trailCore * 0.5;
         
         // Fade based on animation progress
         float distanceFade = 1.0 - progress;
@@ -280,7 +280,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         vec3 finalColor = mix(fragColor.rgb, effectColor, effectAlpha);
         
         // Add additive glow on top for extra brightness
-        finalColor += effectColor * trailGlow * 0.3 * fadeOut;
+        finalColor += effectColor * trailGlow * 0.15 * fadeOut;
         
         // Don't draw over the cursor itself
         finalColor = mix(finalColor, fragColor.rgb, step(sdfCursor, 0.0));
